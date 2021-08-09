@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+  </head>
+  <body>
+    <h1 class="text-center">category Management</h1>
+    <button
+      type="button"
+      class="btn btn-info pull-right"
+      data-toggle="modal"
+      data-target="#myModal"
+    >
+      Add category
+    </button>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+            <h4 class="modal-title">Modal Header</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" />
+              </div>
+              <div class="form-group">
+                <label for="status">status:</label>
+                <select name="status" id="status">
+                  <option value="Y">Active</option>
+                  <option value="N">Non-active</option>
+                </select>
+              </div>
+              <button type="button" class="btn btn-default btn_add">
+                Save
+              </button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <table class="table table-hover tbl_category">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>status</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for(var i=0; i< categoryList.length;i++){%>
+        <tr>
+          <td class="name"><%= categoryList[i].name%></td>
+          <td class="status"><%= categoryList[i].status%></td>
+          <td>
+            <button
+              type="button"
+              class="btn btn-success glyphicon glyphicon-edit btn_edit"
+              value="<%=categoryList[i]._id%>"
+            ></button>
+          </td>
+          <td>
+            <button
+              type="button"
+              class="btn btn-danger glyphicon glyphicon-trash btn_delete"
+              value="<%=categoryList[i]._id%>"
+            ></button>
+          </td>
+        </tr>
+        <%}%>
+      </tbody>
+    </table>
+  </body>
+  <script>
+    $(document).ready(function () {
+      $(document).on("click", ".btn_update", function () {
+        var id = $(this).val();
+        var name = $(this).closest("tr").find(".txt_name").val();
+        var status = $(this).closest("tr").find(".txt_status").val();
+        var data = {
+          id: id,
+          name: name,
+          status: status,
+        };
+        $.ajax({
+          url: "/category-update",
+          type: "POST",
+          data: data,
+          success: function (res) {
+            if (res.success) {
+              alert(res.success);
+              window.location.reload();
+            } else if (res.error) {
+              alert(res.error);
+              window.location.reload();
+            }
+          },
+        });
+      });
+      $(document).on("click", ".btn_edit", function () {
+        var id = $(this).val();
+        $(this)
+          .removeClass("btn_edit glyphicon-edit")
+          .addClass("btn_update")
+          .text("update");
+        var name = $(this).closest("tr").find(".name").text();
+        $(this)
+          .closest("tr")
+          .find(".name")
+          .html("<input type='text' class='txt_name' value='" + name + "' />");
+        var status = $(this).closest("tr").find(".status").text();
+        $(this)
+          .closest("tr")
+          .find(".status")
+          .html(
+            "<input type='text' class='txt_status' value='" + status + "' />"
+          );
+      });
+      $(document).on("click", ".btn_delete", function () {
+        var check = confirm("Are you sure want to delete this item?");
+        if (!check) {
+          return;
+        }
+        var id = $(this).val();
+        $.ajax({
+          url: "/category-delete",
+          type: "POST",
+          data: { id: id },
+          success: function (res) {
+            if (res.success) {
+              alert(res.success);
+              window.location.reload();
+            } else if (res.error) {
+              alert(res.error);
+              window.location.reload();
+            }
+          },
+        });
+      });
+      $(document).on("click", ".btn_add", function () {
+        var name = $("#name").val();
+        var status = $("#status").val();
+        var data = {
+          name: name,
+          status: status,
+        };
+        $.ajax({
+          url: "/category-data",
+          type: "POST",
+          data: data,
+          success: function (res) {
+            if (res.success) {
+              alert(res.success);
+              window.location.reload();
+            } else if (res.error) {
+              alert(res.error);
+              window.location.reload();
+            }
+          },
+        });
+      });
+      $(document).on("click", ".tbl_category tbody tr", function () {
+        var categoryID = $(this).closest("tr").find(".btn_delete").val();
+        window.location.href =
+          window.location.pathname.split("/")[0] +
+          "/product?categoryId=" +
+          categoryID;
+        // console.log(
+        //   window.location.pathname.split("/")[0] +
+        //     "/product?categoryId=" +
+        //     categoryID
+        // );
+      });
+    });
+  </script>
+</html>

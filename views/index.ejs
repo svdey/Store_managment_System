@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <button type="button" class="btn btn-primary pull-right m-3 btn_login">
+      Login
+    </button>
+    <button type="button" class="btn btn-primary pull-right btn_signup">
+      signup
+    </button>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <a href="/employee">Click to go to Employee page</a>
+  </body>
+  <script>
+    $(document).ready(function () {
+      $(document).on("click", ".btn_login", function () {
+        window.location.href = window.location.pathname + "login";
+      });
+      $(document).on("click", ".btn_signup", function () {
+        // console.log("window.location.pathname", window.location.pathname);
+        window.location.href = window.location.pathname + "signup";
+      });
+    });
+  </script>
+</html>
